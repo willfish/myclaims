@@ -33,6 +33,12 @@ defmodule Myclaims.Mixfile do
   # Type `mix help deps` for examples and options.
   defp deps do
     [
+      ##### REMOVE ME #########
+      {:hackney, "1.13.0"},
+      {:certifi, "2.3.1"},
+      {:parse_trans, "3.2.0"},
+      #########################
+      {:absinthe, "~> 1.4.0"},
       {:coherence, "~> 0.5.2"},
       {:cowboy, "~> 1.0"},
       {:gettext, "~> 0.11"},
