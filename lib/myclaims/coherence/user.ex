@@ -8,6 +8,7 @@ defmodule Myclaims.Coherence.User do
     field :email, :string
     field :type, :string
     coherence_schema()
+    has_many :claims, Myclaims.Insurance.Claim, foreign_key: :user_id
 
     timestamps()
   end

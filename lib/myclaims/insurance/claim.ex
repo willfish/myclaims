@@ -7,7 +7,7 @@ defmodule Myclaims.Insurance.Claim do
     field :coordinates, :map
     field :metadata, :map
     field :state, :string
-    field :user_id, :id
+    belongs_to :user, Myclaims.Coherence.User, references: :user_id
 
     timestamps()
   end

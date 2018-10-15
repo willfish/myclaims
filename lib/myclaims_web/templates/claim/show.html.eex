@@ -9,12 +9,12 @@
 
   <li>
     <strong>Coordinates:</strong>
-    <%= @claim.coordinates %>
+    <%= inspect @claim.coordinates %>
   </li>
 
   <li>
     <strong>Metadata:</strong>
-    <%= @claim.metadata %>
+    <%= inspect @claim.metadata %>
   </li>
 
 </ul>

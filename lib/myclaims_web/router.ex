@@ -20,14 +20,6 @@ defmodule MyclaimsWeb.Router do
     plug(Coherence.Authentication.Session, protected: true)
   end
 
-  # scope "/" do
-  #   pipe_through(:browser)
-  # end
-
-  # scope "/" do
-  #   pipe_through(:protected)
-  # end
-
   pipeline :api do
     plug :accepts, ["json"]
   end
@@ -45,6 +37,7 @@ defmodule MyclaimsWeb.Router do
 
     coherence_routes(:protected)
     resources "/claims", ClaimController
+    resources "/users", UserController
   end
 
   defp put_user_token(conn, _) do
