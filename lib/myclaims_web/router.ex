@@ -44,6 +44,7 @@ defmodule MyclaimsWeb.Router do
     pipe_through(:protected)
 
     coherence_routes(:protected)
+    resources "/claims", ClaimController
   end
 
   defp put_user_token(conn, _) do

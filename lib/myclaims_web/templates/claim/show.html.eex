@@ -1,0 +1,23 @@
+<h2>Show Claim</h2>
+
+<ul>
+
+  <li>
+    <strong>State:</strong>
+    <%= @claim.state %>
+  </li>
+
+  <li>
+    <strong>Coordinates:</strong>
+    <%= @claim.coordinates %>
+  </li>
+
+  <li>
+    <strong>Metadata:</strong>
+    <%= @claim.metadata %>
+  </li>
+
+</ul>
+
+<span><%= link "Edit", to: claim_path(@conn, :edit, @claim) %></span>
+<span><%= link "Back", to: claim_path(@conn, :index) %></span>
