@@ -1,0 +1,6 @@
+%{
+  "BMW" => ["600", "700" "i3" "1-Series" "2-Series" "New Class 1602" "3-Series" "4-Series" "3-Series GT" "New Class 1500" "5-Series" "6-Series" "501" "502"],
+  "Cadillac" => ["ATS", "BLS", "Catera", "Coupe", "CT6", "CTS", "Eldorado", "ELR", "Escalade", "Series", "SRX", "XT4", "XT5", "XTS"],
+  "Kia" => ["Cee", "Sephia", "Carens", "Joice", "Carnival", "Retona", "Stonic", "Niro", "Sportage"]
+  "Volkswagen" => ["Santana", "Quantum", "SpaceFox", "SP2", "Saveiro"]
+}

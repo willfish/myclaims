@@ -87,7 +87,6 @@ seed_user = fn(user) ->
   |> Myclaims.Coherence.User.changeset(user)
   |> Myclaims.Repo.insert!
 
-  IO.inspect(user)
   case user.type do
     "EMPLOYEE" -> nil
     "CUSTOMER" ->
