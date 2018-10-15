@@ -51,8 +51,6 @@ config :phoenix, :stacktrace_depth, 20
 # Configure your database
 config :myclaims, Myclaims.Repo,
   adapter: Ecto.Adapters.Postgres,
-  username: "postgres",
-  password: "postgres",
   database: "myclaims_dev",
   hostname: "localhost",
   pool_size: 10
