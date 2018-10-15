@@ -9,6 +9,7 @@ defmodule MyclaimsWeb.Router do
     plug :protect_from_forgery
     plug :put_secure_browser_headers
     plug Coherence.Authentication.Session, protected: false
+    plug :put_user_token
   end
 
   pipeline :protected do
@@ -18,6 +19,7 @@ defmodule MyclaimsWeb.Router do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(Coherence.Authentication.Session, protected: true)
+    plug :put_user_token
   end
 
   pipeline :api do
@@ -49,6 +51,7 @@ defmodule MyclaimsWeb.Router do
       ""
     end
 
+    IO.inspect(conn)
     assign(conn, :token, token)
   end
 end
