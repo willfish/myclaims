@@ -7,8 +7,10 @@ defmodule Resolvers.Claims do
     {:ok, Myclaims.Insurance.get_claim!(id)}
   end
 
-  def new_claim(_, _, _) do
-
+  def new_claim(_, %{input: attrs}, _) do
+    attrs = Map.put(attrs, :state, "REPORTED")
+    {:ok, result} = Myclaims.Insurance.create_claim(attrs)
+    {:ok, result}
   end
 
   def reported(_, %{id: id}, _) do
@@ -33,4 +35,8 @@ defmodule Resolvers.Claims do
     {:ok, claim} = Myclaims.Insurance.update_claim(claim, attrs)
     claim
   end
+
+  defp handle_result({:ok, result} = response), do: response
+  defp handle_result({:error, message}), do: message
+  defp handle_result(other), do: other
 end

@@ -20,6 +20,7 @@ defmodule MyclaimsWeb.ClaimController do
         conn
         |> put_flash(:info, "Claim created successfully.")
         |> redirect(to: claim_path(conn, :show, claim))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "new.html", changeset: changeset)
     end
@@ -44,6 +45,7 @@ defmodule MyclaimsWeb.ClaimController do
         conn
         |> put_flash(:info, "Claim updated successfully.")
         |> redirect(to: claim_path(conn, :show, claim))
+
       {:error, %Ecto.Changeset{} = changeset} ->
         render(conn, "edit.html", claim: claim, changeset: changeset)
     end

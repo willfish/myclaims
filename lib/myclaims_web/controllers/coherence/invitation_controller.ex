@@ -20,13 +20,13 @@ defmodule MyclaimsWeb.Coherence.InvitationController do
 
   require Logger
 
-  plug Coherence.ValidateOption, :invitable
-  plug :scrub_params, "user" when action in [:create_user]
-  plug :layout_view, view: Coherence.InvitationView, caller: __MODULE__
+  plug(Coherence.ValidateOption, :invitable)
+  plug(:scrub_params, "user" when action in [:create_user])
+  plug(:layout_view, view: Coherence.InvitationView, caller: __MODULE__)
 
-  @type schema :: Ecto.Schema.t
-  @type conn :: Plug.Conn.t
-  @type params :: Map.t
+  @type schema :: Ecto.Schema.t()
+  @type conn :: Plug.Conn.t()
+  @type params :: Map.t()
 
   @doc """
   Render the new invitation form.
@@ -44,31 +44,42 @@ defmodule MyclaimsWeb.Coherence.InvitationController do
   the invitation email.
   """
   @spec create(conn, params) :: conn
-  def create(conn, %{"invitation" =>  invitation_params} = params) do
+  def create(conn, %{"invitation" => invitation_params} = params) do
     email = invitation_params["email"]
-    changeset = Schemas.change_invitation Controller.permit(invitation_params,
-      Config.invitation_permitted_attributes() || Schema.permitted_attributes_default(:invitation))
+
+    changeset =
+      Schemas.change_invitation(
+        Controller.permit(
+          invitation_params,
+          Config.invitation_permitted_attributes() ||
+            Schema.permitted_attributes_default(:invitation)
+        )
+      )
+
     # case repo.one from u in user_schema, where: u.email == ^email do
-    case Schemas.get_user_by_email email do
+    case Schemas.get_user_by_email(email) do
       nil ->
-        token = random_string 48
+        token = random_string(48)
         url = router_helpers().invitation_url(conn, :edit, token)
         changeset = put_change(changeset, :token, token)
         do_insert(conn, changeset, url, params, email)
+
       _ ->
         changeset =
           changeset
           |> add_error(:email, Messages.backend().user_already_has_an_account())
           |> struct(action: true)
+
         conn
         |> respond_with(:invitation_create_error, %{changeset: changeset})
     end
   end
 
   defp do_insert(conn, changeset, url, params, email) do
-    case Schemas.create changeset do
+    case Schemas.create(changeset) do
       {:ok, invitation} ->
-        send_user_email :invitation, invitation, url
+        send_user_email(:invitation, invitation, url)
+
         conn
         |> respond_with(
           :invitation_create_success,
@@ -77,15 +88,18 @@ defmodule MyclaimsWeb.Coherence.InvitationController do
             info: Messages.backend().invitation_sent()
           }
         )
+
       {:error, changeset} ->
         {conn, changeset} =
-          case Schemas.get_by_invitation email: email do
-            nil -> {conn, changeset}
+          case Schemas.get_by_invitation(email: email) do
+            nil ->
+              {conn, changeset}
+
             invitation ->
               {assign(conn, :invitation, invitation),
-                add_error(changeset, :email,
-                  Messages.backend().invitation_already_sent())}
+               add_error(changeset, :email, Messages.backend().invitation_already_sent())}
           end
+
         respond_with(conn, :invitation_create_error, %{changeset: changeset})
     end
   end
@@ -99,15 +113,24 @@ defmodule MyclaimsWeb.Coherence.InvitationController do
   @spec edit(conn, params) :: conn
   def edit(conn, params) do
     token = params["id"]
-    case Schemas.get_by_invitation token: token do
+
+    case Schemas.get_by_invitation(token: token) do
       nil ->
         conn
         |> put_flash(:error, Messages.backend().invalid_invitation_token())
         |> redirect(to: logged_out_url(conn))
+
       invite ->
-        user_schema = Config.user_schema
-        changeset = Controller.changeset(:invitation, user_schema, user_schema.__struct__,
-          Map.take(invite, Config.forwarded_invitation_fields))
+        user_schema = Config.user_schema()
+
+        changeset =
+          Controller.changeset(
+            :invitation,
+            user_schema,
+            user_schema.__struct__,
+            Map.take(invite, Config.forwarded_invitation_fields())
+          )
+
         conn
         |> render(:edit, changeset: changeset, token: invite.token)
     end
@@ -121,8 +144,9 @@ defmodule MyclaimsWeb.Coherence.InvitationController do
   @spec create_user(conn, params) :: conn
   def create_user(conn, params) do
     token = params["token"]
-    user_schema = Config.user_schema
-    case Schemas.get_by_invitation token: token do
+    user_schema = Config.user_schema()
+
+    case Schemas.get_by_invitation(token: token) do
       nil ->
         respond_with(
           conn,
@@ -131,20 +155,27 @@ defmodule MyclaimsWeb.Coherence.InvitationController do
             error: Messages.backend().invalid_invitation()
           }
         )
+
       invite ->
         :invitation
-        |> Controller.changeset(user_schema, user_schema.__struct__,
-          Controller.permit(params["user"], Config.registration_permitted_attributes() ||
-            Schema.permitted_attributes_default(:registration)))
-        |> Schemas.create
+        |> Controller.changeset(
+          user_schema,
+          user_schema.__struct__,
+          Controller.permit(
+            params["user"],
+            Config.registration_permitted_attributes() ||
+              Schema.permitted_attributes_default(:registration)
+          )
+        )
+        |> Schemas.create()
         |> case do
           {:ok, user} ->
-            Schemas.delete invite
+            Schemas.delete(invite)
+
             conn
             |> send_confirmation(user, user_schema)
-            |> respond_with(
-              :invitation_create_user_success
-            )
+            |> respond_with(:invitation_create_user_success)
+
           {:error, changeset} ->
             respond_with(
               conn,
@@ -165,7 +196,7 @@ defmodule MyclaimsWeb.Coherence.InvitationController do
   """
   @spec resend(conn, params) :: conn
   def resend(conn, %{"id" => id} = params) do
-    case Schemas.get_invitation id do
+    case Schemas.get_invitation(id) do
       nil ->
         respond_with(
           conn,
@@ -175,9 +206,14 @@ defmodule MyclaimsWeb.Coherence.InvitationController do
             error: Messages.backend().cant_find_that_token()
           }
         )
+
       invitation ->
-        send_user_email :invitation, invitation,
+        send_user_email(
+          :invitation,
+          invitation,
           router_helpers().invitation_url(conn, :edit, invitation.token)
+        )
+
         respond_with(
           conn,
           :invitation_resend_success,
