@@ -29,13 +29,6 @@ make_models = %{
 }
 makes = Map.keys(make_models)
 
-vehicle_registration = %{model: "Tesla", mileage: 202200.213, last_service: "2018-01-01", registration: "ABCDEF1234"}
-claims = [
-  %{
-    coordinates: %{lat: 81.89482, lng: 81.89482},
-    metadata: %{vehicle_registration: vehicle_registration}
-  }
-]
 plates = [
   "YGD-371", "RMB-278", "GFI-125", "PTO-622", "YGY-460",
   "BJI-602", "WLG-034", "QIY-800", "GQD-242", "TFL-844",
@@ -52,7 +45,7 @@ states = [
 
 seed_claim = fn(user) ->
   make = makes |> Enum.random()
-  model = Map.fetch!(make_models, make) |> Enum.random()
+  model = make_models |> Map.fetch!(make) |> Enum.random()
 
   attrs = %{
     coordinates: %{
