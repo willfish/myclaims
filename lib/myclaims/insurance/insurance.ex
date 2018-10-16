@@ -23,8 +23,7 @@ defmodule Myclaims.Insurance do
       {:filter, filter}, query ->
         query |> filter_with(filter)
     end)
-    |>
-    Repo.all()
+    |> Repo.all()
   end
 
   defp filter_with(query, filter) do
@@ -32,12 +31,15 @@ defmodule Myclaims.Insurance do
       {:user_id, id}, query ->
         from q in query, where: q.user_id = ^id
       {:created_before, date}, query ->
-        from q in query, where: q.inserted_at <= ^date
+        from(q in query, where: q.inserted_at <= ^date)
+
       {:created_after, date}, query ->
-        from q in query, where: q.inserted_at >= ^date
+        from(q in query, where: q.inserted_at >= ^date)
+
       {:state, state}, query ->
-        from q in query,
+        from(q in query,
           where: ilike(q.state, ^"%#{state}%")
+        )
     end)
   end
 

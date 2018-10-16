@@ -17,27 +17,27 @@ defmodule MyclaimsWeb.Coherence.RegistrationController do
 
   require Logger
 
-  @type schema :: Ecto.Schema.t
-  @type conn :: Plug.Conn.t
-  @type params :: Map.t
+  @type schema :: Ecto.Schema.t()
+  @type conn :: Plug.Conn.t()
+  @type params :: Map.t()
 
   @dialyzer [
-    {:nowarn_function, update: 2},
+    {:nowarn_function, update: 2}
   ]
 
-  plug Coherence.RequireLogin when action in ~w(show edit update delete)a
-  plug Coherence.ValidateOption, :registerable
-  plug :scrub_params, "registration" when action in [:create, :update]
+  plug(Coherence.RequireLogin when action in ~w(show edit update delete)a)
+  plug(Coherence.ValidateOption, :registerable)
+  plug(:scrub_params, "registration" when action in [:create, :update])
 
-  plug :layout_view, view: Coherence.RegistrationView, caller: __MODULE__
-  plug :redirect_logged_in when action in [:new, :create]
+  plug(:layout_view, view: Coherence.RegistrationView, caller: __MODULE__)
+  plug(:redirect_logged_in when action in [:new, :create])
 
   @doc """
   Render the new user form.
   """
   @spec new(conn, params) :: conn
   def new(conn, _params) do
-    user_schema = Config.user_schema
+    user_schema = Config.user_schema()
     changeset = Controller.changeset(:registration, user_schema, user_schema.__struct__)
     render(conn, :new, email: "", changeset: changeset)
   end
@@ -50,17 +50,25 @@ defmodule MyclaimsWeb.Coherence.RegistrationController do
   """
   @spec create(conn, params) :: conn
   def create(conn, %{"registration" => registration_params} = params) do
-    user_schema = Config.user_schema
+    user_schema = Config.user_schema()
+
     :registration
-    |> Controller.changeset(user_schema, user_schema.__struct__,
-      Controller.permit(registration_params, Config.registration_permitted_attributes() ||
-        Schema.permitted_attributes_default(:registration)))
-    |> Schemas.create
+    |> Controller.changeset(
+      user_schema,
+      user_schema.__struct__,
+      Controller.permit(
+        registration_params,
+        Config.registration_permitted_attributes() ||
+          Schema.permitted_attributes_default(:registration)
+      )
+    )
+    |> Schemas.create()
     |> case do
       {:ok, user} ->
         conn
         |> send_confirmation(user, user_schema)
-        |> redirect_or_login(user, params, Config.allow_unconfirmed_access_for)
+        |> redirect_or_login(user, params, Config.allow_unconfirmed_access_for())
+
       {:error, changeset} ->
         respond_with(conn, :registration_create_error, %{changeset: changeset})
     end
@@ -69,6 +77,7 @@ defmodule MyclaimsWeb.Coherence.RegistrationController do
   defp redirect_or_login(conn, user, params, 0) do
     respond_with(conn, :registration_create_success, %{params: params, user: user})
   end
+
   defp redirect_or_login(conn, user, params, _) do
     conn
     |> Controller.login_user(user, params)
@@ -77,7 +86,7 @@ defmodule MyclaimsWeb.Coherence.RegistrationController do
       %{
         params: params,
         user: user,
-        notice: Messages.backend().account_created_successfully(),
+        notice: Messages.backend().account_created_successfully()
       }
     )
   end
@@ -106,17 +115,24 @@ defmodule MyclaimsWeb.Coherence.RegistrationController do
   """
   @spec update(conn, params) :: conn
   def update(conn, %{"registration" => user_params} = params) do
-    user_schema = Config.user_schema
+    user_schema = Config.user_schema()
     user = Coherence.current_user(conn)
+
     :registration
-    |> Controller.changeset(user_schema, user, Controller.permit(user_params,
-      Config.registration_permitted_attributes() ||
-        Schema.permitted_attributes_default(:registration)))
-    |> Schemas.update
+    |> Controller.changeset(
+      user_schema,
+      user,
+      Controller.permit(
+        user_params,
+        Config.registration_permitted_attributes() ||
+          Schema.permitted_attributes_default(:registration)
+      )
+    )
+    |> Schemas.update()
     |> case do
       {:ok, user} ->
-        Config.auth_module
-        |> apply(Config.update_login, [conn, user, [id_key: Config.schema_key]])
+        Config.auth_module()
+        |> apply(Config.update_login(), [conn, user, [id_key: Config.schema_key()]])
         |> respond_with(
           :registration_update_success,
           %{
@@ -125,6 +141,7 @@ defmodule MyclaimsWeb.Coherence.RegistrationController do
             info: Messages.backend().account_updated_successfully()
           }
         )
+
       {:error, changeset} ->
         respond_with(conn, :registration_update_error, %{user: user, changeset: changeset})
     end
@@ -137,7 +154,7 @@ defmodule MyclaimsWeb.Coherence.RegistrationController do
   def delete(conn, params) do
     user = Coherence.current_user(conn)
     conn = Controller.logout_user(conn)
-    Schemas.delete! user
+    Schemas.delete!(user)
     respond_with(conn, :registration_delete_success, %{params: params})
   end
 end

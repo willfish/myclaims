@@ -17,8 +17,8 @@ defmodule Schema.ScalarTypes do
   defp decode(_) do
     :error
   end
-  defp encode(value), do: value
 
+  defp encode(value), do: value
 
   @desc """
   The `DateTime` scalar type represents a date and time in the UTC
@@ -27,12 +27,12 @@ defmodule Schema.ScalarTypes do
   be converted to UTC and any UTC offset other than 0 will be rejected.
   """
   scalar :datetime, name: "DateTime" do
-    serialize &DateTime.to_iso8601/1
-    parse &parse_datetime/1
+    serialize(&DateTime.to_iso8601/1)
+    parse(&parse_datetime/1)
   end
 
-  @spec parse_datetime(Absinthe.Blueprint.Input.String.t) :: {:ok, DateTime.t} | :error
-  @spec parse_datetime(Absinthe.Blueprint.Input.Null.t) :: {:ok, nil}
+  @spec parse_datetime(Absinthe.Blueprint.Input.String.t()) :: {:ok, DateTime.t()} | :error
+  @spec parse_datetime(Absinthe.Blueprint.Input.Null.t()) :: {:ok, nil}
   defp parse_datetime(%Absinthe.Blueprint.Input.String{value: value}) do
     case DateTime.from_iso8601(value) do
       {:ok, datetime, 0} -> {:ok, datetime}
@@ -40,9 +40,11 @@ defmodule Schema.ScalarTypes do
       _error -> :error
     end
   end
+
   defp parse_datetime(%Absinthe.Blueprint.Input.Null{}) do
     {:ok, nil}
   end
+
   defp parse_datetime(_) do
     :error
   end

@@ -7,14 +7,14 @@ defmodule Schema do
 
   query do
     field :claims, list_of(:claim) do
-      arg :filter, :claims_filter
-      resolve &Resolvers.Claims.claims/3
+      arg(:filter, :claims_filter)
+      resolve(&Resolvers.Claims.claims/3)
     end
 
     field :claim, :claim do
       @desc "ID of the claim"
-      arg :id, non_null(:id)
-      resolve &Resolvers.Claims.claim/3
+      arg(:id, non_null(:id))
+      resolve(&Resolvers.Claims.claim/3)
     end
   end
 
@@ -26,6 +26,8 @@ defmodule Schema do
 
       resolve &Resolvers.Accounts.login/3
 
+      # Intercept the login result and cache it in the stateful context
+      # for the current user
       middleware fn res, _ ->
         with %{value: %{token: token, user: user}} <- res do
           context = Map.put(res.context, :current_user, user)
@@ -33,6 +35,12 @@ defmodule Schema do
           %{res | context: context }
         end
       end
+    end
+
+    @desc "Submit a new claim"
+    field :new_claim, :claim do
+      arg(:input, non_null(:new_claim_input))
+      resolve(&Resolvers.Claims.new_claim/3)
     end
 
     @desc "Marks the claim as being in the REPORTED state"
