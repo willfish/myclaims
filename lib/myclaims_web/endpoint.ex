@@ -1,5 +1,6 @@
 defmodule MyclaimsWeb.Endpoint do
   use Phoenix.Endpoint, otp_app: :myclaims
+  use Absinthe.Phoenix.Endpoint
 
   socket "/socket", MyclaimsWeb.UserSocket
 
