@@ -32,14 +32,16 @@ defmodule Schema.AccountTypes do
     interface :user
 
     field :email, :string
-    field :claims, list_of(:claim) do
-    end
-    resolve fn customer, _, _ ->
-      claims =
-        %{filter: %{user_id: customer.id}}
-        |> MyClaims.Insurance.list_claims()
+    field :type, :string
 
-      {:ok, claims}
+    field :claims, list_of(:claim) do
+      resolve fn customer, _, _ ->
+        claims =
+          %{filter: %{user_id: customer.id}}
+          |> MyClaims.Insurance.list_claims()
+
+        {:ok, claims}
+      end
     end
   end
 end
