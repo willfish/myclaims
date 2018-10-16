@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Hello Myclaims!</title>
+    <title>Hello MyClaims!</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
@@ -30,6 +30,21 @@
       </main>
 
     </div> <!-- /container -->
+
+    <%= if Coherence.logged_in?(@conn) do %>
+      <script type = "text/javascript">
+        <% token = Map.get(assigns, :token) %>
+        window.token = "<%= token %>"
+
+        window.user_name = "<%= Coherence.current_user(@conn).name %>"
+      </script>
+    <%= else %>
+      <script type="text/javascript">
+        window.token = ""
+        window.user_name = ""
+      </script>
+    <% end %>
+
     <script src="<%= static_path(@conn, "/js/app.js") %>"></script>
   </body>
 </html>
