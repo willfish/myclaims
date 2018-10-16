@@ -42,4 +42,29 @@ defmodule Schema do
       resolve &Resolvers.Claims.completed/3
     end
   end
+
+  subscription do
+    field :claim_changes, :claim do
+      arg :user_id, non_null(:id)
+
+      config fn %{user_id: id}, _info ->
+        {:ok, topic: id}
+      end
+
+      trigger [:reported, :with_underwriter, :with_assessor, :completed], topic: fn
+        %{claim: claim} -> [claim.id]
+        _ -> []
+      end
+
+      resolve fn %{claim: claim}, _ , _ ->
+        {:ok, claim}
+      end
+    end
+
+    field :new_claims, :claim do
+      config fn _args, _info ->
+        {:ok, topic: "new_claim"}
+      end
+    end
+  end
 end
