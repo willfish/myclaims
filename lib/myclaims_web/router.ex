@@ -3,13 +3,13 @@ defmodule MyclaimsWeb.Router do
   use Coherence.Router
 
   pipeline :browser do
-    plug :accepts, ["html"]
-    plug :fetch_session
-    plug :fetch_flash
-    plug :protect_from_forgery
-    plug :put_secure_browser_headers
-    plug Coherence.Authentication.Session, protected: false
-    plug :put_user_token
+    plug(:accepts, ["html"])
+    plug(:fetch_session)
+    plug(:fetch_flash)
+    plug(:protect_from_forgery)
+    plug(:put_secure_browser_headers)
+    plug(Coherence.Authentication.Session, protected: false)
+    plug(:put_user_token)
   end
 
   pipeline :protected do
@@ -19,49 +19,51 @@ defmodule MyclaimsWeb.Router do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(Coherence.Authentication.Session, protected: true)
-    plug :put_user_token
+    plug(:put_user_token)
   end
 
   pipeline :api do
-    plug :accepts, ["json"]
+    plug(:accepts, ["json"])
   end
 
   scope "/" do
-    pipe_through :api
+    pipe_through(:api)
 
-    forward "/api", Absinthe.Plug,
-      schema: Schema
+    forward("/api", Absinthe.Plug, schema: Schema)
 
-    forward "/graphiql", Absinthe.Plug.GraphiQL,
+    forward("/graphiql", Absinthe.Plug.GraphiQL,
       schema: Schema,
       socket: MyclaimsWeb.UserSocket
-
+    )
   end
 
   scope "/", MyclaimsWeb do
-    pipe_through :browser
+    pipe_through(:browser)
 
     coherence_routes()
 
-    get "/", PageController, :index
+    get("/", PageController, :index)
   end
 
   scope "/", MyclaimsWeb do
     pipe_through(:protected)
 
     coherence_routes(:protected)
-    resources "/claims", ClaimController
-    resources "/users", UserController
+    resources("/claims", ClaimController)
+    resources("/users", UserController)
   end
 
   defp put_user_token(conn, _) do
-    token = if Coherence.logged_in?(conn) do
-      Phoenix.Token.sign(
-        conn, "user id", Coherence.current_user(conn).id
-      )
-    else
-      ""
-    end
+    token =
+      if Coherence.logged_in?(conn) do
+        Phoenix.Token.sign(
+          conn,
+          "user id",
+          Coherence.current_user(conn).id
+        )
+      else
+        ""
+      end
 
     assign(conn, :token, token)
   end

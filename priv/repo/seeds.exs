@@ -44,9 +44,13 @@ states = [
 ]
 
 seed_claim = fn(user) ->
+  make_date = fn(range) ->
+    range
+    |> FakerElixir.Date.backward()
+  end
+
   make = makes |> Enum.random()
   model = make_models |> Map.fetch!(make) |> Enum.random()
-
   attrs = %{
     coordinates: %{
       lat: FakerElixir.Number.decimal(3, 6),
@@ -62,7 +66,10 @@ seed_claim = fn(user) ->
       }
     },
     state: states |> Enum.random(),
-    user_id: user.id
+    user_id: user.id,
+    received: make_date.(5..10),
+    occurred: make_date.(10..15),
+    resolved: make_date.(3..5)
   }
 
   %Claim{}
@@ -77,8 +84,8 @@ seed_user = fn(user) ->
   }, user)
 
   user = %Myclaims.Coherence.User{}
-  |> Myclaims.Coherence.User.changeset(user)
-  |> Myclaims.Repo.insert!
+         |> Myclaims.Coherence.User.changeset(user)
+         |> Myclaims.Repo.insert!
 
   case user.type do
     "EMPLOYEE" -> nil

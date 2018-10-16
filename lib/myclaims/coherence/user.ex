@@ -4,11 +4,11 @@ defmodule Myclaims.Coherence.User do
   use Coherence.Schema
 
   schema "users" do
-    field :name, :string
-    field :email, :string
-    field :type, :string
+    field(:name, :string)
+    field(:email, :string)
+    field(:type, :string)
     coherence_schema()
-    has_many :claims, Myclaims.Insurance.Claim, foreign_key: :user_id
+    has_many(:claims, Myclaims.Insurance.Claim, foreign_key: :user_id)
 
     timestamps()
   end
@@ -24,7 +24,10 @@ defmodule Myclaims.Coherence.User do
 
   def changeset(model, params, :password) do
     model
-    |> cast(params, ~w(password password_confirmation reset_password_token reset_password_sent_at))
+    |> cast(
+      params,
+      ~w(password password_confirmation reset_password_token reset_password_sent_at)
+    )
     |> validate_coherence_password_reset(params)
   end
 end
