@@ -32,7 +32,7 @@ defmodule Myclaims.Insurance do
       {:created_before, date}, query ->
         from q in query, where: q.inserted_at <= ^date
       {:created_after, date}, query ->
-        from q in query, where: q.inserted_at <= ^date
+        from q in query, where: q.inserted_at >= ^date
       {:state, state}, query ->
         from q in query,
           where: ilike(q.state, ^"%#{state}%")
