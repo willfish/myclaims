@@ -17,8 +17,26 @@ defmodule Myclaims.Insurance do
       [%Claim{}, ...]
 
   """
-  def list_claims do
-    Repo.all(Claim)
+  def list_claims(args) do
+    args
+    |> Enum.reduce(Claim, fn
+      {:filter, filter}, query ->
+        query |> filter_with(filter)
+    end)
+    |>
+    Repo.all()
+  end
+
+  defp filter_with(query, filter) do
+    Enum.reduce(filter, query, fn
+      {:created_before, date}, query ->
+        from q in query, where: q.inserted_at <= ^date
+      {:created_after, date}, query ->
+        from q in query, where: q.inserted_at >= ^date
+      {:state, state}, query ->
+        from q in query,
+          where: ilike(q.state, ^"%#{state}%")
+    end)
   end
 
   @doc """

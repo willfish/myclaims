@@ -39,6 +39,7 @@ defmodule Myclaims.Mixfile do
       {:parse_trans, "3.2.0"},
       #########################
       {:absinthe, "~> 1.4.0"},
+      {:absinthe_plug, "~> 1.4"},
       {:coherence, "~> 0.5.2"},
       {:cowboy, "~> 1.0"},
       {:gettext, "~> 0.11"},

@@ -26,6 +26,18 @@ defmodule MyclaimsWeb.Router do
     plug :accepts, ["json"]
   end
 
+  scope "/" do
+    pipe_through :api
+
+    forward "/api", Absinthe.Plug,
+      schema: Schema
+
+    forward "/graphiql", Absinthe.Plug.GraphiQL,
+      schema: Schema,
+      socket: MyclaimsWeb.UserSocket
+
+  end
+
   scope "/", MyclaimsWeb do
     pipe_through :browser
 
@@ -51,7 +63,6 @@ defmodule MyclaimsWeb.Router do
       ""
     end
 
-    IO.inspect(conn)
     assign(conn, :token, token)
   end
 end
