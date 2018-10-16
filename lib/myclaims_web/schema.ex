@@ -40,6 +40,7 @@ defmodule Schema do
     @desc "Submit a new claim"
     field :new_claim, :claim do
       arg(:input, non_null(:new_claim_input))
+      middleware Middleware.Authorize, "any"
       resolve(&Resolvers.Claims.new_claim/3)
     end
 
