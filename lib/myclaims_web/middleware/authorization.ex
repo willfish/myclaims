@@ -1,4 +1,4 @@
-defmodule Myclaimss.Schema.Middleware.Authorization do
+defmodule Middleware.Authorization do
   @behaviour Absinthe.Middleware
 
   def call(resolution, user_type) do

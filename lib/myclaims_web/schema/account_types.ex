@@ -16,8 +16,8 @@ defmodule Schema.AccountTypes do
     field :type, :string
 
     resolve_type fn
-      %{type: "admin"}, _ -> :admin
-      %{type: "customer"}, _ -> :customer
+      %{type: "ADMIN"}, _ -> :admin
+      %{type: "CUSTOMER"}, _ -> :customer
     end
   end
 

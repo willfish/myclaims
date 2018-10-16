@@ -1,6 +1,6 @@
 defmodule MyclaimsWeb.UserSocket do
   use Phoenix.Socket
-  use Absinthe.Phoenix.Socket, schema: PlateSlateWeb.Schema
+  use Absinthe.Phoenix.Socket, schema: Schema
 
   ## Channels
   # channel "room:*", MyclaimsWeb.RoomChannel

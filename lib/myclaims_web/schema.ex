@@ -40,7 +40,7 @@ defmodule Schema do
     @desc "Submit a new claim"
     field :new_claim, :claim do
       arg(:input, non_null(:new_claim_input))
-      middleware Middleware.Authorize, "any"
+      middleware Middleware.Authorization, "any"
       resolve(&Resolvers.Claims.new_claim/3)
     end
 
@@ -48,7 +48,7 @@ defmodule Schema do
     field :reported, :claim do
       @desc "ID of the claim"
       arg :id, non_null(:id)
-      middleware Middleware.Authorize, "admin"
+      middleware Middleware.Authorization, "admin"
       resolve &Resolvers.Claims.reported/3
     end
 
@@ -56,7 +56,7 @@ defmodule Schema do
     field :with_underwriter, :claim do
       @desc "ID of the claim"
       arg :id, non_null(:id)
-      middleware Middleware.Authorize, "admin"
+      middleware Middleware.Authorization, "admin"
       resolve &Resolvers.Claims.with_underwriter/3
     end
 
@@ -64,7 +64,7 @@ defmodule Schema do
     field :with_assessor, :claim do
       @desc "ID of the claim"
       arg :id, non_null(:id)
-      middleware Middleware.Authorize, "admin"
+      middleware Middleware.Authorization, "admin"
       resolve &Resolvers.Claims.with_assessor/3
     end
 
@@ -72,7 +72,7 @@ defmodule Schema do
     field :completed, :claim do
       @desc "ID of the claim"
       arg :id, non_null(:id)
-      middleware Middleware.Authorize, "admin"
+      middleware Middleware.Authorization, "admin"
       resolve &Resolvers.Claims.completed/3
     end
   end
