@@ -1,6 +1,7 @@
 defmodule Schema do
   use Absinthe.Schema
 
+  import_types Schema.AccountTypes
   import_types Schema.ClaimTypes
   import_types Schema.ScalarTypes
 
@@ -18,27 +19,51 @@ defmodule Schema do
   end
 
   mutation do
+    @desc "Retrieve session information for subsequent authentication"
+    field :login, :session do
+      arg :email, non_null(:string)
+      arg :password, non_null(:string)
+
+      resolve &Resolvers.Accounts.login/3
+
+      middleware fn res, _ ->
+        with %{value: %{token: token, user: user}} <- res do
+          context = Map.put(res.context, :current_user, user)
+          context = Map.put(res.context, :token, token)
+          %{res | context: context }
+        end
+      end
+    end
+
     @desc "Marks the claim as being in the REPORTED state"
     field :reported, :claim do
+      @desc "ID of the claim"
       arg :id, non_null(:id)
+      middleware Middleware.Authorize, "admin"
       resolve &Resolvers.Claims.reported/3
     end
 
     @desc "Marks the claim as being with the underwriter."
     field :with_underwriter, :claim do
+      @desc "ID of the claim"
       arg :id, non_null(:id)
+      middleware Middleware.Authorize, "admin"
       resolve &Resolvers.Claims.with_underwriter/3
     end
 
     @desc "Marks the claim as being with the assessor."
     field :with_assessor, :claim do
+      @desc "ID of the claim"
       arg :id, non_null(:id)
+      middleware Middleware.Authorize, "admin"
       resolve &Resolvers.Claims.with_assessor/3
     end
 
     @desc "Marks the claim as being in the COMPLETED state"
     field :completed, :claim do
+      @desc "ID of the claim"
       arg :id, non_null(:id)
+      middleware Middleware.Authorize, "admin"
       resolve &Resolvers.Claims.completed/3
     end
   end
