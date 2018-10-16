@@ -101,4 +101,25 @@ defmodule Myclaims.Accounts do
   def change_user(%User{} = user) do
     User.changeset(user, %{})
   end
+
+  def authenticate(email, password) do
+    user = Repo.get_by(User, email: email)
+
+    case valid_user_login?(user, password) do
+      true -> {:ok, %{token: generate_token(user), user: user}}
+      _ -> :error
+    end
+  end
+
+  defp valid_user_login?(nil, _params), do: false
+  defp valid_user_login?(%{active: false}, _params), do: false
+  defp valid_user_login?(user, password) do
+    require Coherence.Config
+    user.__struct__.checkpw(password, Map.get(user, Coherence.Config.password_hash()))
+  end
+
+  def generate_token(user) do
+    %{password_hash: user.password_hash, type: user.type}
+    |> MyclaimsWeb.Authentication.sign()
+  end
 end
