@@ -19,7 +19,6 @@ defmodule MyclaimsWeb.Router do
     plug(:protect_from_forgery)
     plug(:put_secure_browser_headers)
     plug(Coherence.Authentication.Session, protected: true)
-    plug :put_user_token
   end
 
   pipeline :api do
@@ -56,13 +55,17 @@ defmodule MyclaimsWeb.Router do
 
   defp put_user_token(conn, _) do
     token = if Coherence.logged_in?(conn) do
-      Phoenix.Token.sign(
-        conn, "user id", Coherence.current_user(conn).id
-      )
+      user = Coherence.current_user(conn)
+      MyclaimsWeb.Accounts.generate_token(user)
     else
       ""
     end
 
     assign(conn, :token, token)
+  end
+
+  def debug(conn, _) do
+    IO.inspect(conn)
+    conn
   end
 end
