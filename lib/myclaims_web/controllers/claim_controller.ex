@@ -5,7 +5,7 @@ defmodule MyclaimsWeb.ClaimController do
   alias Myclaims.Insurance.Claim
 
   def index(conn, _params) do
-    claims = Insurance.list_claims()
+    claims = Insurance.list_claims(%{})
     render(conn, "index.html", claims: claims)
   end
 
