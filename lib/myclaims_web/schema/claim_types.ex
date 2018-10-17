@@ -11,6 +11,7 @@ defmodule Schema.ClaimTypes do
 
   @desc "Filtering options for claims"
   input_object :claims_filter do
+    field(:user_id, :id, description: "Matching a user id")
     field(:state, :string, description: "Matching a state")
     field(:created_before, :datetime, description: "Claim created before date")
     field(:created_after, :datetime, description: "Added to the menu after this date")
