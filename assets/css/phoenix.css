@@ -21,12 +21,13 @@ body, form, ul, table {
 .header {
   border-bottom: 1px solid #e5e5e5;
 }
+
 .logo {
-  width: 575px;
-  height: 230px;
+  width: 519px;
+  height: 71px;
   display: inline-block;
   margin-bottom: 1em;
-  background-image: url("/images/mydrive-solutions.png");
+  background-image: url("/images/mydrive-solutions.foo");
   background-size: 575px 230px;
 }
 
