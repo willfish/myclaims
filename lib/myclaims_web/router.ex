@@ -33,6 +33,7 @@ defmodule MyclaimsWeb.Router do
 
     forward("/graphiql", Absinthe.Plug.GraphiQL,
       schema: Schema,
+      interface: :simple,
       socket: MyclaimsWeb.UserSocket
     )
   end
@@ -54,17 +55,18 @@ defmodule MyclaimsWeb.Router do
   end
 
   defp put_user_token(conn, _) do
-    token =
-      if Coherence.logged_in?(conn) do
-        Phoenix.Token.sign(
-          conn,
-          "user id",
-          Coherence.current_user(conn).id
-        )
-      else
-        ""
-      end
+    token = if Coherence.logged_in?(conn) do
+      user = Coherence.current_user(conn)
+      Myclaims.Accounts.generate_token(user)
+    else
+      ""
+    end
 
     assign(conn, :token, token)
+  end
+
+  def debug(conn, _) do
+    IO.inspect(conn)
+    conn
   end
 end

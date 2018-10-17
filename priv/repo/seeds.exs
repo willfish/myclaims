@@ -13,9 +13,9 @@ alias Myclaims.Repo
 alias Myclaims.Insurance.Claim
 
 users = [
-  %{name: "William Fish", email: "william.michael.fish@gmail.com", type: "EMPLOYEE"},
-  %{name: "Evangelos Giataganas", email: "evangelos.giatagana@mydrivesolutions.com", type: "EMPLOYEE"},
-  %{name: "Marco Moscatiello", email: "marco.moscatiello@mydrivesolutions.com", type: "EMPLOYEE"},
+  %{name: "William Fish", email: "william.michael.fish@gmail.com", type: "ADMIN"},
+  %{name: "Evangelos Giataganas", email: "evangelos.giatagana@mydrivesolutions.com", type: "ADMIN"},
+  %{name: "Marco Moscatiello", email: "marco.moscatiello@mydrivesolutions.com", type: "ADMIN"},
   %{name: "Sandy Marsh", email: "sandy@example.com", type: "CUSTOMER"},
   %{name: "Joe Armstrong", email: "joe.armstrong@example.com", type: "CUSTOMER"},
   %{name: "Jessica Maidment", email: "jessica.maidment@example.com", type: "CUSTOMER"}
@@ -88,7 +88,7 @@ seed_user = fn(user) ->
          |> Myclaims.Repo.insert!
 
   case user.type do
-    "EMPLOYEE" -> nil
+    "ADMIN" -> nil
     "CUSTOMER" ->
       claims_count = FakerElixir.Number.between(1..3)
       for _ <- 1..claims_count, do: seed_claim.(user)

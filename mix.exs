@@ -40,6 +40,7 @@ defmodule Myclaims.Mixfile do
       #########################
       {:absinthe, "~> 1.4.0"},
       {:absinthe_plug, "~> 1.4"},
+      {:absinthe_phoenix, "~> 1.4.0"},
       {:coherence, "~> 0.5.2"},
       {:cowboy, "~> 1.0"},
       {:gettext, "~> 0.11"},

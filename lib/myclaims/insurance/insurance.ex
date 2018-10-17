@@ -28,6 +28,8 @@ defmodule Myclaims.Insurance do
 
   defp filter_with(query, filter) do
     Enum.reduce(filter, query, fn
+      {:user_id, id}, query ->
+        from q in query, where: q.user_id == ^id
       {:created_before, date}, query ->
         from(q in query, where: q.inserted_at <= ^date)
 
