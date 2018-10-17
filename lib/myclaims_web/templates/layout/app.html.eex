@@ -7,7 +7,7 @@
     <meta name="description" content="">
     <meta name="author" content="">
 
-    <title>Hello MyClaims!</title>
+    <title>MyClaims</title>
     <link rel="stylesheet" href="<%= static_path(@conn, "/css/app.css") %>">
   </head>
 
@@ -16,7 +16,12 @@
       <header class="header">
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
-            <li><a href="http://www.phoenixframework.org/docs">Get Started</a></li>
+            <li>
+              <%= link "Register", to: registration_path(@conn, :new) %>
+            </li>
+            <li>
+              <%= link "Sign in", to: session_path(@conn, :new) %>
+            </li>
           </ul>
         </nav>
         <span class="logo"></span>
@@ -34,11 +39,12 @@
     <%= if Coherence.logged_in?(@conn) do %>
       <script type = "text/javascript">
         <% token = Map.get(assigns, :token) %>
-        window.token = "<%= token %>"
+          window.token = "<%= token %>"
 
         window.user_name = "<%= Coherence.current_user(@conn).name %>"
+        window.user_id = "<%= Coherence.current_user(@conn).id %>"
       </script>
-    <%= else %>
+      <%= else %>
       <script type="text/javascript">
         window.token = ""
         window.user_name = ""
