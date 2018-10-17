@@ -27,8 +27,8 @@ body, form, ul, table {
   height: 71px;
   display: inline-block;
   margin-bottom: 1em;
-  background-image: url("/images/mydrive-solutions.foo");
-  background-size: 575px 230px;
+  /* background-image: url("/images/mydrive-solutions.foo"); */
+  /* background-size: 575px 230px; */
 }
 
 /* Everything but the jumbotron gets side spacing for mobile first views */
