@@ -18,3 +18,13 @@ Ready to run in production? Please [check our deployment guides](http://www.phoe
   * Docs: https://hexdocs.pm/phoenix
   * Mailing list: http://groups.google.com/group/phoenix-talk
   * Source: https://github.com/phoenixframework/phoenix
+
+
+
+being inside the branch and the main folder myclaims/
+run:
+docker build -t myclaims .
+and then:
+docker run -d -p 4000:4000 myclaims
+
+then browse -> localhost:4000
