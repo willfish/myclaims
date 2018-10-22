@@ -16,12 +16,18 @@
       <header class="header">
         <nav role="navigation">
           <ul class="nav nav-pills pull-right">
-            <li>
+            <%= if Coherence.logged_in?(@conn) do %>
+              <li>
+                <%= link "Sign out", to: session_path(@conn, :delete) %>
+              </li>
+            <%= else %>
+              <li>
               <%= link "Register", to: registration_path(@conn, :new) %>
-            </li>
-            <li>
-              <%= link "Sign in", to: session_path(@conn, :new) %>
-            </li>
+              </li>
+              <li>
+                <%= link "Sign in", to: session_path(@conn, :new) %>
+              </li>
+            <% end %>
           </ul>
         </nav>
         <span class="logo"></span>

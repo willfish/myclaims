@@ -17,7 +17,9 @@
     <%= inspect @claim.metadata %>
   </li>
 
+<%# <script src="claim.js"></script> %>
+<div id="example"></div>
 </ul>
-
 <span><%= link "Edit", to: claim_path(@conn, :edit, @claim) %></span>
 <span><%= link "Back", to: claim_path(@conn, :index) %></span>
+
